@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+//  serviceType
+// '0' search for ip given url
+// '1' add url-ip pair
+// '2' delete url-ip pair
+// '3' update ip of the given url
+
+message request {
+    string type = 1; 		// request type
+    string url = 2;  		// domain name 
+    string ip = 3;	 		// IP
+    string timestamp = 4; 	// record the times of gRPC communication
+}
+
+message response {
+    string response = 1;
+}
+
+message broadcastid {
+    string type = 1;    // '0' for join, '1' for quit
+    string id = 2;
+    string channel = 3;
+}
+
+message probe {
+    string port = 1;
+    string flag = 2;   // SYN and ACK
+}
+
+// Dns servive including add, delete, update and query
+service dnsService {
+    rpc SendMessage(request) returns (response);
+}
+
+// central server broadcast the global view of Chord
+service broadcast {
+    rpc SendMessage(broadcastid) returns (response);
+}
+
+// SYN/ACK
+service connect {
+    rpc SendMessage(probe) returns (response);
+}
